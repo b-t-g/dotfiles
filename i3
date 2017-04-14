@@ -181,4 +181,3 @@ client.focused #323232 #323232 #323232 #323232
 client.focused_inactive #0000ff #0000ff #0000ff #0000ff
 client.unfocused #0000ff #0000ff #0000ff #0000ff
 client.urgent #0000ff #0000ff #0000ff #0000ff
-

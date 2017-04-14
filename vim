@@ -13,8 +13,8 @@ map S L
 nmap gx <Plug>NetrwBrowseX
 nnoremap <silent> <Plug>NetrwBrowseX :call netrw#NetrwBrowseX(expand("<cWORD>"),0)
 imap 	     
-imap "" ""<Left>
-imap '' ''<Left>
+imap "P ""<Left>
+imap 'p ''<Left>
 imap <> <><Left>
 imap HH ()<Left>
 imap NN $$<Left>
