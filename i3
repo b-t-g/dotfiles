@@ -173,7 +173,6 @@ bindsym $mod+x move workspace to output right
 exec_always xrandr --output VGA1 --auto --left-of LVDS1
 exec_always xrandr --output LVDS1 --mode 1366x768
 exec mate-terminal -e mutt --hide-menubar
-exec guake
 
 
 #the 30273c is what the background used to be prior to deletion
