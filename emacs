@@ -84,8 +84,8 @@
   (define-key haskell-mode-map (kbd "C-c C-n C-c") 'haskell-process-cabal-build)
   (define-key haskell-mode-map (kbd "C-c C-n c") 'haskell-process-cabal)))
 
-(global-set-key (kbd "C-x M-p") 'windmove-up)
-(global-set-key (kbd "C-x M-n") 'windmove-down)
+(key-chord-define-global "TH" 'windmove-up)
+(key-chord-define-global "NH" 'windmove-down)
 (eval-after-load 'ruby-mode '(progn
 			       (define-key ruby-mode-map (kbd "M-s M-h") 'ruby-load-file)
 			       (define-key ruby-mode-map (kbd "M-s M-s") 'inf-ruby)))
