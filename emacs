@@ -47,6 +47,7 @@
 (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
 (package-initialize)
 
+(load-theme 'jsc-light)
 (require 'evil)
 (evil-mode 1)
 
@@ -102,5 +103,4 @@
               )
 
 (add-hook 'haskell-mode-hook 'intero-mode)
-(load-theme 'high-contrast t t)
-(enable-theme 'high-contrast)
+(setq backup-by-copying t)

@@ -15,7 +15,7 @@ alias rlang='R'
 alias matlab='/home/brendan/matlab/bin/matlab'
 alias apti='sudo aptitude update && sudo aptitude safe-upgrade'
 alias please='eval "sudo $(fc -ln -1)"'
-alias temacs='emacs -nw'
+alias emacs='emacs -nw'
 alias ocaml='rlwrap ocaml'
 alias rogue='qjoypad --device /dev/input/js0 Rogue'
 zle -N zle-line-init
