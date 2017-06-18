@@ -70,6 +70,10 @@
 (key-chord-define-global "HR" "[]\C-b")
 (key-chord-define-global "HC" "\C-f")
 (key-chord-define-global "<>" "<>\C-b")
+(key-chord-define-global "GC" 'windmove-up)
+(key-chord-define-global "MW" 'windmove-down)
+(key-chord-define-global "OE" 'windmove-left)
+(key-chord-define-global "OU" 'windmove-right)
 (with-eval-after-load 'evil-maps)
   (define-key evil-motion-state-map (kbd ":") 'evil-repeat-find-char)
  (define-key evil-motion-state-map (kbd ";") 'evil-ex)
@@ -86,8 +90,6 @@
   (define-key haskell-mode-map (kbd "C-c C-n C-c") 'haskell-process-cabal-build)
   (define-key haskell-mode-map (kbd "C-c C-n c") 'haskell-process-cabal)))
 
-(key-chord-define-global "GC" 'windmove-up)
-(key-chord-define-global "MW" 'windmove-down)
 (eval-after-load 'ruby-mode '(progn
 			       (define-key ruby-mode-map (kbd "M-s M-h") 'ruby-load-file)
 			       (define-key ruby-mode-map (kbd "M-s M-s") 'inf-ruby)))
