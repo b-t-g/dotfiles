@@ -47,7 +47,7 @@
 (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
 (package-initialize)
 
-(load-theme 'jsc-light)
+
 (require 'evil)
 (evil-mode 1)
 
@@ -57,11 +57,10 @@
  (quote
  (("gnu" . "http://elpa.gnu.org/packages/")
   ("melpa-stable" . "http://stable.melpa.org/packages/")))))
-
-(add-to-list 'load-path "/home/brendan/.emacs.d/lisp")
-(require 'key-chord)
+;(autoload 'key-chord "key-chord" "key-choard" t)
+(autoload 'magit "magit" "magit" t)
+(autoload 'ensime "ensime" "ensime" t)
 (key-chord-mode 1)
-; (setq x-meta-keysym 'super) (setq x-super-keysym 'meta)
 (key-chord-define-global "HT" "()\C-b")
 (key-chord-define-global "\"P" "\"\"\C-b")
 (key-chord-define-global "\'p" "\'\'\C-b")
@@ -74,9 +73,11 @@
 (key-chord-define-global "MW" 'windmove-down)
 (key-chord-define-global "OE" 'windmove-left)
 (key-chord-define-global "OU" 'windmove-right)
-(with-eval-after-load 'evil-maps)
-  (define-key evil-motion-state-map (kbd ":") 'evil-repeat-find-char)
- (define-key evil-motion-state-map (kbd ";") 'evil-ex)
+(define-key evil-normal-state-map "j" 'evil-next-visual-line)
+(define-key evil-normal-state-map "k" 'evil-previous-visual-line)
+(require 'evil-matchit)
+(global-evil-matchit-mode 1)
+(global-set-key (kbd "C-c p") 'helm-projectile)
 
 (custom-set-variables
   '(haskell-process-suggest-remove-import-lines t)
@@ -94,10 +95,8 @@
 			       (define-key ruby-mode-map (kbd "M-s M-h") 'ruby-load-file)
 			       (define-key ruby-mode-map (kbd "M-s M-s") 'inf-ruby)))
 (setq haskell-tags-on-save t)
-(require 'evil-magit)
-(require 'org)
-(require 'evil-org)
-(setq path-to-ctags "/usr/bin/ctags")
+(add-hook 'scala-mode-hook 'ensime-scala-mode-hook)
+(setq path-to-ctags "/usr/local/bin/ctags")
 (defun create-tags (dir-name)
     "Create tags file."
         (interactive "DDirectory: ")
@@ -107,3 +106,6 @@
 
 (add-hook 'haskell-mode-hook 'intero-mode)
 (setq backup-by-copying t)
+(setq backup-directory-alist `(("." . "~/.saves")))
+(setq column-number-mode t)
+(add-hook 'python-mode-hook #'(lambda () (setq py-python-command "/usr/local/bin/python3")))

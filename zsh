@@ -22,8 +22,17 @@ alias rogue='qjoypad --device /dev/input/js0 Rogue'
 #zle -N zle-line-init
 #zle -N zle-keymap-select
 export SWT_GTK3=0
+alias ctags="/usr/local/bin/ctags"
 cs=~/pdfs/cs/
 C=~/code/C
 haskell=~/code/haskell
 : ~cs ~C ~haskell
 #export PATH=$PATH:$HOME/neovim/bin:usr/lib/jvm/java-7-openjdk-amd64/bin/:usr/lib/jvm/java-7-openjdk-amd64/bin:$HOME/idea-IC-143.1184.17/bin:$HOME/java-mars/eclipse/:$HOME/.local/bin:$HOME/Downloads/Telegram:$HOME/.cabal/bin
+
+function hide {
+    mv $1 $(echo $1 | awk '{gsub(/^/, "."); print}')
+}
+
+function unhide {
+    mv $1 $(echo $1 | awk '{gsub(/^./, ""); print}')
+}
