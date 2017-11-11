@@ -7,6 +7,7 @@ alias sn="sudo shutdown now -hP"
 #alias agd="sudo apt-get update"
 #alias agg="sudo apt-get upgrade"
 alias python="python3"
+alias ocaml="rlwrap ocaml"
 #alias z="alsamixer"
 #alias agup='sudo apt-get update && sudo apt-get upgrade'
 alias a='ls -FG'
@@ -17,8 +18,8 @@ alias rlang='R'
 #alias apti='sudo aptitude update && sudo aptitude safe-upgrade'
 alias please='eval "sudo $(fc -ln -1)"'
 alias emacs='emacs -nw'
-alias ocaml='rlwrap ocaml'
 alias rogue='qjoypad --device /dev/input/js0 Rogue'
+alias c='clear'
 #zle -N zle-line-init
 #zle -N zle-keymap-select
 export SWT_GTK3=0
@@ -36,3 +37,14 @@ function hide {
 function unhide {
     mv $1 $(echo $1 | awk '{gsub(/^./, ""); print}')
 }
+
+function destroy {
+    pkill -9 $1
+}
+
+function ncal {
+    cal $1 $(date +%Y)
+}
+export WORKON_HOME=~/Envs
+export VIRTUALENVWRAPPER_PYTHON=/usr/local/bin/python2
+source /usr/local/bin/virtualenvwrapper.sh

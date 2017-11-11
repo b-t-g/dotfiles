@@ -60,6 +60,7 @@
 ;(autoload 'key-chord "key-chord" "key-choard" t)
 (autoload 'magit "magit" "magit" t)
 (autoload 'ensime "ensime" "ensime" t)
+(add-hook 'before-save-hook 'delete-trailing-whitespace)
 (key-chord-mode 1)
 (key-chord-define-global "HT" "()\C-b")
 (key-chord-define-global "\"P" "\"\"\C-b")
@@ -78,6 +79,8 @@
 (require 'evil-matchit)
 (global-evil-matchit-mode 1)
 (global-set-key (kbd "C-c p") 'helm-projectile)
+(require 'highlight-indentation)
+(set-face-background 'highlight-indentation-face "#aaaaff")
 
 (custom-set-variables
   '(haskell-process-suggest-remove-import-lines t)
@@ -109,3 +112,6 @@
 (setq backup-directory-alist `(("." . "~/.saves")))
 (setq column-number-mode t)
 (add-hook 'python-mode-hook #'(lambda () (setq py-python-command "/usr/local/bin/python3")))
+(setq flymake-python-pyflakes-executable "flake8")
+(setq flymake-hlint-executable "~/.cabal/bin/hlint")
+(add-hook 'python-mode-hook 'highlight-indentation-mode)
