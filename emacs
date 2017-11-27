@@ -32,7 +32,7 @@
   (if (file-readable-p "~/.gnu-emacs")
       (load "~/.gnu-emacs" nil t)
     (if (file-readable-p "/etc/skel/.gnu-emacs")
-	(load "/etc/skel/.gnu-emacs" nil t)))
+        (load "/etc/skel/.gnu-emacs" nil t)))
 
   ;; Custom Settings
   ;; ===============
@@ -51,6 +51,8 @@
 (require 'evil)
 (evil-mode 1)
 
+(setq indent-tabs-mode nil)
+(setq-default tab-width 4)
 (require 'package)
 (custom-set-variables
  '(package-archives
@@ -95,8 +97,8 @@
   (define-key haskell-mode-map (kbd "C-c C-n c") 'haskell-process-cabal)))
 
 (eval-after-load 'ruby-mode '(progn
-			       (define-key ruby-mode-map (kbd "M-s M-h") 'ruby-load-file)
-			       (define-key ruby-mode-map (kbd "M-s M-s") 'inf-ruby)))
+                               (define-key ruby-mode-map (kbd "M-s M-h") 'ruby-load-file)
+                               (define-key ruby-mode-map (kbd "M-s M-s") 'inf-ruby)))
 (setq haskell-tags-on-save t)
 (add-hook 'scala-mode-hook 'ensime-scala-mode-hook)
 (setq path-to-ctags "/usr/local/bin/ctags")
@@ -106,6 +108,9 @@
             (shell-command
                  (format "%s -f TAGS -e -R %s" path-to-ctags (directory-file-name dir-name)))
               )
+(defun go-build ()
+  (interactive)
+    (shell-command (format "go build %s" buffer-file-name)))
 
 (add-hook 'haskell-mode-hook 'intero-mode)
 (setq backup-by-copying t)
@@ -115,3 +120,10 @@
 (setq flymake-python-pyflakes-executable "flake8")
 (setq flymake-hlint-executable "~/.cabal/bin/hlint")
 (add-hook 'python-mode-hook 'highlight-indentation-mode)
+(eval-after-load 'go-mode '(progn
+                             (setq indent-tabs-mode nil)
+                             (setq-default tab-width 4)
+                             (define-key go-mode-map (kbd "C-c C-e") (kbd "if SPC err SPC != SPC nil SPC { RET RET } <up> TAB"))
+                             (define-key go-mode-map (kbd "C-c C-p") (kbd "if SPC err SPC != SPC nil SPC { RET RET } <up> TAB panic(\"\") <left> <left>"))
+                             (define-key go-mode-map (kbd "C-c C-n") (kbd "if SPC err SPC != SPC nil SPC { RET TAB return SPC nil, SPC err RET } RET"))
+                             (define-key go-mode-map (kbd "C-c C-l") 'go-build)))
