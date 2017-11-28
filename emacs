@@ -110,7 +110,7 @@
               )
 (defun go-build ()
   (interactive)
-    (shell-command (format "go build %s" buffer-file-name)))
+  (eshell-command (format "go build %s" buffer-file-name)))
 
 (add-hook 'haskell-mode-hook 'intero-mode)
 (setq backup-by-copying t)
