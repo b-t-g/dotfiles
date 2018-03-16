@@ -5,7 +5,6 @@
 ;;; If you need your own personal ~/.emacs
 ;;; please make a copy of this file
 ;;; an placein your changes and/or extension.
-;;;
 ;;; Copyright (c) 1997-2002 SuSE Gmbh Nuernberg, Germany.
 ;;;
 ;;; Author: Werner Fink, <feedback@suse.de> 1997,98,99,2002
@@ -18,10 +17,10 @@
   ;;; XEmacs
   ;;; ------
   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-  (progn
-     (if (file-readable-p "~/.xemacs/init.el")
-        (load "~/.xemacs/init.el" nil t))
-  )
+    (progn
+      (if (file-readable-p "~/.xemacs/init.el")
+          (load "~/.xemacs/init.el" nil t))
+      )
   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   ;;; GNU-Emacs
   ;;; ---------
@@ -41,28 +40,22 @@
   (setq custom-file "~/.gnu-emacs-custom")
   (load "~/.gnu-emacs-custom" t t)
 ;;;
-)
+  )
 ;;;
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
 (package-initialize)
 
-
-(require 'evil)
-(evil-mode 1)
-
-(setq indent-tabs-mode nil)
-(setq-default tab-width 4)
 (require 'package)
 (custom-set-variables
  '(package-archives
- (quote
- (("gnu" . "http://elpa.gnu.org/packages/")
-  ("melpa-stable" . "http://stable.melpa.org/packages/")))))
-;(autoload 'key-chord "key-chord" "key-choard" t)
-(autoload 'magit "magit" "magit" t)
-(autoload 'ensime "ensime" "ensime" t)
+   (quote
+    (("gnu" . "http://elpa.gnu.org/packages/")
+     ("melpa-stable" . "http://stable.melpa.org/packages/")))))
+                                        ;(autoload 'key-chord "key-chord" "key-choard" t)
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
+
+(global-set-key (kbd "C-x n a") 'rename-buffer)
 (key-chord-mode 1)
 (key-chord-define-global "HT" "()\C-b")
 (key-chord-define-global "\"P" "\"\"\C-b")
@@ -76,54 +69,120 @@
 (key-chord-define-global "MW" 'windmove-down)
 (key-chord-define-global "OE" 'windmove-left)
 (key-chord-define-global "OU" 'windmove-right)
+(key-chord-define-global "#$" 'find-file)
+
+(require 'evil)
+(evil-mode 1)
 (define-key evil-normal-state-map "j" 'evil-next-visual-line)
 (define-key evil-normal-state-map "k" 'evil-previous-visual-line)
+(define-key evil-insert-state-map "\C-a" nil)
+(define-key evil-insert-state-map "\C-k" nil)
+(define-key evil-insert-state-map "\C-d" nil)
+(define-key evil-insert-state-map "\C-w" nil)
+
 (require 'evil-matchit)
 (global-evil-matchit-mode 1)
+
 (global-set-key (kbd "C-c p") 'helm-projectile)
 (require 'highlight-indentation)
 (set-face-background 'highlight-indentation-face "#aaaaff")
 
 (custom-set-variables
-  '(haskell-process-suggest-remove-import-lines t)
-  '(haskell-process-auto-import-loaded-modules t)
-  '(haskell-process-log t))
-(eval-after-load 'haskell-mode '(progn
-  (define-key haskell-mode-map (kbd "M-s M-h") 'haskell-process-load-or-reload)
-  (define-key haskell-mode-map (kbd "M-s M-s") 'haskell-interactive-switch)
-  (define-key haskell-mode-map (kbd "C-c C-n C-t") 'haskell-process-do-type)
-  (define-key haskell-mode-map (kbd "C-c C-n C-i") 'haskell-process-do-info)
-  (define-key haskell-mode-map (kbd "C-c C-n C-c") 'haskell-process-cabal-build)
-  (define-key haskell-mode-map (kbd "C-c C-n c") 'haskell-process-cabal)))
-
+ '(haskell-process-suggest-remove-import-lines t)
+ '(haskell-process-auto-import-loaded-modules t)
+ '(haskell-process-log t))
 (eval-after-load 'ruby-mode '(progn
                                (define-key ruby-mode-map (kbd "M-s M-h") 'ruby-load-file)
                                (define-key ruby-mode-map (kbd "M-s M-s") 'inf-ruby)))
 (setq haskell-tags-on-save t)
-(add-hook 'scala-mode-hook 'ensime-scala-mode-hook)
+(package-install 'intero)
+(add-hook 'haskell-mode-hook 'intero-mode)
+
 (setq path-to-ctags "/usr/local/bin/ctags")
 (defun create-tags (dir-name)
-    "Create tags file."
-        (interactive "DDirectory: ")
-            (shell-command
-                 (format "%s -f TAGS -e -R %s" path-to-ctags (directory-file-name dir-name)))
-              )
-(defun go-build ()
+  "Create tags file."
+  (interactive "DDirectory: ")
+  (shell-command
+   (format "%s -f TAGS -e -R %s" path-to-ctags (directory-file-name dir-name)))
+  )
+(defun create-mutt ()
   (interactive)
-  (eshell-command (format "go build %s" buffer-file-name)))
+  (ansi-term "/usr/local/bin/mutt")
+  (rename-buffer "mutt")
+  )
+(defun mutt ()
+  (interactive)
+  (setq mutts (length (seq-filter (lambda (x) (string-match-p (regexp-quote (format "%s" x)) "mutt")) (buffer-list))))
+  (if (eq mutts 0)
+      (progn
+        (ansi-term "/usr/local/bin/mutt")
+        (rename-buffer "mutt")
+        )
+    ))
+(defun initial-zsh ()
+  (interactive)
+  (setq zshs (length (seq-filter (lambda (x) (string-match-p (regexp-quote (format "%s" x)) "zsh")) (buffer-list))))
+  (if (eq zshs 0)
+      (progn
+        (ansi-term "/bin/zsh")
+        (rename-buffer "zsh")
+        )
+    )
+  )
 
-(add-hook 'haskell-mode-hook 'intero-mode)
-(setq backup-by-copying t)
-(setq backup-directory-alist `(("." . "~/.saves")))
-(setq column-number-mode t)
+(defun cmus ()
+  (interactive)
+  (setq cmuss (length (seq-filter (lambda (x) (string-match-p (regexp-quote (format "%s" x)) "cmus")) (buffer-list))))
+  (if (eq cmuss 0)
+      (progn
+        (ansi-term "/bin/zsh")
+        (rename-buffer "cmus")
+        )
+    )
+  )
+(defun new-zsh ()
+  (interactive)
+  (ansi-term "/bin/zsh")
+  (setq zshs (length (seq-filter (lambda (x) (string-match-p (regexp-quote (format "%s" x)) "zsh")) (buffer-list))))
+  (if (eq zshs 0)
+      (rename-buffer "zsh")
+    (rename-buffer (format "zsh%d" (+ 1 zshs)))
+    )
+  )
+
+(mutt)
+(initial-zsh)
+(cmus)
 (add-hook 'python-mode-hook #'(lambda () (setq py-python-command "/usr/local/bin/python3")))
 (setq flymake-python-pyflakes-executable "flake8")
 (setq flymake-hlint-executable "~/.cabal/bin/hlint")
 (add-hook 'python-mode-hook 'highlight-indentation-mode)
+(eval-after-load 'python-mode '(progn
+                                 (define-key python-mode-map (kbd "C-c C-l") 'py-execute-buffer-no-switch)))
+
+(defun go-build ()
+  (interactive)
+  (eshell-command (format "go build %s" buffer-file-name)))
 (eval-after-load 'go-mode '(progn
-                             (setq indent-tabs-mode nil)
-                             (setq-default tab-width 4)
                              (define-key go-mode-map (kbd "C-c C-e") (kbd "if SPC err SPC != SPC nil SPC { RET RET } <up> TAB"))
                              (define-key go-mode-map (kbd "C-c C-p") (kbd "if SPC err SPC != SPC nil SPC { RET RET } <up> TAB panic(\"\") <left> <left>"))
                              (define-key go-mode-map (kbd "C-c C-n") (kbd "if SPC err SPC != SPC nil SPC { RET TAB return SPC nil, SPC err RET } RET"))
-                             (define-key go-mode-map (kbd "C-c C-l") 'go-build)))
+                             (define-key go-mode-map (kbd "C-c C-l") 'go-build)
+                             (define-key go-mode-map (kbd "C-c C-c") 'ac-complete-go)
+                             (add-hook 'before-save-hook 'gofmt-before-save)
+                             ))
+(require 'go-autocomplete)
+(require 'auto-complete-config)
+(ac-config-default)
+(require 'ac-clang)
+(setq debug-on-error t)
+
+(setq backup-by-copying t)
+(setq backup-directory-alist `(("." . "~/.saves")))
+(setq column-number-mode t)
+(require 'smooth-scrolling)
+(smooth-scrolling-mode 1)
+
+(setq indent-tabs-mode nil)
+(setq-default tab-width 4)
+(autoload 'magit "magit" "magit" t)
