@@ -131,8 +131,9 @@
   (setq cmuss (length (seq-filter (lambda (x) (string-match-p (regexp-quote (format "%s" x)) "cmus")) (buffer-list))))
   (if (eq cmuss 0)
       (progn
-        (ansi-term "/usr/local/bin/cmus")
-        (rename-buffer "cmus")
+		 (ansi-term "/bin/zsh")
+    	 (rename-buffer "cmus")
+		 (process-send-string "cmus" "cmus\n")
         )
     )
   )
@@ -156,9 +157,11 @@
     )
   )
 
+; Run mutt, cmus, and a zsh shell on startup
 (mutt)
-(initial-zsh)
 (cmus)
+(initial-zsh)
+
 (add-hook 'python-mode-hook #'(lambda () (setq py-python-command "/usr/local/bin/python3")))
 (setq flymake-python-pyflakes-executable "flake8")
 (setq flymake-hlint-executable "~/.cabal/bin/hlint")
