@@ -42,6 +42,7 @@
 ;;;
   )
 ;;;
+(server-start)
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
 (package-initialize)
@@ -70,7 +71,7 @@
 (key-chord-define-global "OE" 'windmove-left)
 (key-chord-define-global "OU" 'windmove-right)
 (key-chord-define-global "#$" 'find-file)
-
+(key-chord-define-global "@$" "\M-x")
 (require 'evil)
 (evil-mode 1)
 (define-key evil-normal-state-map "j" 'evil-next-visual-line)
@@ -108,7 +109,7 @@
   )
 (defun mutt ()
   (interactive)
-  (setq mutts (length (seq-filter (lambda (x) (string-match-p (regexp-quote (format "%s" x)) "mutt")) (buffer-list))))
+  (setq mutts (buffers-named "mutt"))
   (if (eq mutts 0)
       (progn
         (ansi-term "/usr/local/bin/mutt")
@@ -117,7 +118,7 @@
     ))
 (defun initial-zsh ()
   (interactive)
-  (setq zshs (length (seq-filter (lambda (x) (string-match-p (regexp-quote (format "%s" x)) "zsh")) (buffer-list))))
+  (setq zshs (buffers-named "zsh"))
   (if (eq zshs 0)
       (progn
         (ansi-term "/bin/zsh")
@@ -126,9 +127,13 @@
     )
   )
 
+(defun buffers-named (name)
+	   (length (seq-filter (lambda (x) (string-match-p (regexp-quote (format "%s" x)) name)) (buffer-list)))
+)
+
 (defun cmus ()
   (interactive)
-  (setq cmuss (length (seq-filter (lambda (x) (string-match-p (regexp-quote (format "%s" x)) "cmus")) (buffer-list))))
+  (setq cmuss (buffers-named "cmus"))
   (if (eq cmuss 0)
       (progn
 		 (ansi-term "/bin/zsh")
