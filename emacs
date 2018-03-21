@@ -71,7 +71,6 @@
 (key-chord-define-global "OE" 'windmove-left)
 (key-chord-define-global "OU" 'windmove-right)
 (key-chord-define-global "#$" 'find-file)
-(key-chord-define-global "@$" "\M-x")
 (require 'evil)
 (evil-mode 1)
 (define-key evil-normal-state-map "j" 'evil-next-visual-line)
