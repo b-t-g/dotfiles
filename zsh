@@ -1,6 +1,6 @@
 alias ff="firefox"
 bindkey -e
-export EDITOR=vim
+export EDITOR=emacs
 alias sn="sudo shutdown now -hP"
 #alias agi="sudo aptitude install"
 #alias ai="sudo aptitude install"

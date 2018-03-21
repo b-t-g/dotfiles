@@ -79,6 +79,7 @@
 (define-key evil-insert-state-map "\C-k" nil)
 (define-key evil-insert-state-map "\C-d" nil)
 (define-key evil-insert-state-map "\C-w" nil)
+(define-key evil-insert-state-map "\C-e" nil)
 
 (require 'evil-matchit)
 (global-evil-matchit-mode 1)
@@ -105,11 +106,6 @@
   (shell-command
    (format "%s -f TAGS -e -R %s" path-to-ctags (directory-file-name dir-name)))
   )
-(defun create-mutt ()
-  (interactive)
-  (ansi-term "/usr/local/bin/mutt")
-  (rename-buffer "mutt")
-  )
 (defun mutt ()
   (interactive)
   (setq mutts (length (seq-filter (lambda (x) (string-match-p (regexp-quote (format "%s" x)) "mutt")) (buffer-list))))
@@ -135,11 +131,21 @@
   (setq cmuss (length (seq-filter (lambda (x) (string-match-p (regexp-quote (format "%s" x)) "cmus")) (buffer-list))))
   (if (eq cmuss 0)
       (progn
-        (ansi-term "/bin/zsh")
+        (ansi-term "/usr/local/bin/cmus")
         (rename-buffer "cmus")
         )
     )
   )
+
+(defun restart-cmus()
+  (interactive)
+  (kill-matching-buffers "^cmus$")
+  (progn
+    (ansi-term "/bin/zsh")
+    (rename-buffer "cmus")
+	(process-send-string "cmus" "cmus\n")
+    ))
+
 (defun new-zsh ()
   (interactive)
   (ansi-term "/bin/zsh")
@@ -175,7 +181,6 @@
 (require 'auto-complete-config)
 (ac-config-default)
 (require 'ac-clang)
-(setq debug-on-error t)
 
 (setq backup-by-copying t)
 (setq backup-directory-alist `(("." . "~/.saves")))
