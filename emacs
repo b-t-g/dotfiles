@@ -99,7 +99,7 @@
 (package-install 'intero)
 (add-hook 'haskell-mode-hook 'intero-mode)
 
-(setq path-to-ctags "/usr/local/bin/ctags")
+(setq path-to-ctags (shell-command-to-string "which ctags"))
 (defun create-tags (dir-name)
   "Create tags file."
   (interactive "DDirectory: ")
@@ -108,36 +108,32 @@
   )
 (defun mutt ()
   (interactive)
-  (setq mutts (buffers-named "mutt"))
+  (setq mutts (find-buffers-named (buffer-list) "mutt" 0))
   (if (eq mutts 0)
       (progn
-        (ansi-term "/usr/local/bin/mutt")
+        (ansi-term (substring (shell-command-to-string "which mutt") 0 -1))
         (rename-buffer "mutt")
         )
     ))
 (defun initial-zsh ()
   (interactive)
-  (setq zshs (buffers-named "zsh"))
+  (setq zshs (find-buffers-named (buffer-list) "zsh" 0))
   (if (eq zshs 0)
       (progn
-        (ansi-term "/bin/zsh")
+        (ansi-term (substring (shell-command-to-string "which zsh") 0 -1))
         (rename-buffer "zsh")
         )
     )
   )
 
-(defun buffers-named (name)
-	   (length (seq-filter (lambda (x) (string-match-p (regexp-quote (format "%s" x)) name)) (buffer-list)))
-)
-
 (defun cmus ()
   (interactive)
-  (setq cmuss (buffers-named "cmus"))
+  (setq cmuss (find-buffers-named (buffer-list) "cmus" 0))
   (if (eq cmuss 0)
       (progn
-		 (ansi-term "/bin/zsh")
-    	 (rename-buffer "cmus")
-		 (process-send-string "cmus" "cmus\n")
+        (ansi-term (substring (shell-command-to-string "which zsh") 0 -1))
+		(rename-buffer "cmus")
+		(process-send-string "cmus" "cmus\n")
         )
     )
   )
@@ -146,15 +142,23 @@
   (interactive)
   (kill-matching-buffers "^cmus$")
   (progn
-    (ansi-term "/bin/zsh")
+    (ansi-term (substring (shell-command-to-string "which zsh") 0 -1))
     (rename-buffer "cmus")
 	(process-send-string "cmus" "cmus\n")
     ))
 
+(defun find-buffers-named (buffers name count)
+  (interactive)
+  (if buffers
+      (if (string-match name (format "%s" (car buffers)))
+          (find-buffers-named (cdr buffers) name (+ 1 count))
+        (find-buffers-named (cdr buffers) name count))
+    count))
+
 (defun new-zsh ()
   (interactive)
-  (ansi-term "/bin/zsh")
-  (setq zshs (length (seq-filter (lambda (x) (string-match-p (regexp-quote (format "%s" x)) "zsh")) (buffer-list))))
+  (ansi-term (substring (shell-command-to-string "which zsh") 0 -1))
+  (setq zshs (find-buffers-named (buffer-list) "zsh" 0))
   (if (eq zshs 0)
       (rename-buffer "zsh")
     (rename-buffer (format "zsh%d" (+ 1 zshs)))
@@ -198,3 +202,6 @@
 (setq indent-tabs-mode nil)
 (setq-default tab-width 4)
 (autoload 'magit "magit" "magit" t)
+
+(eval-after-load 'term-mode '(progn
+							   (define-key term-mode-map "\C-c" nil)))
