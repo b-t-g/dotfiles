@@ -99,7 +99,7 @@
 (package-install 'intero)
 (add-hook 'haskell-mode-hook 'intero-mode)
 
-(setq path-to-ctags (shell-command-to-string "which ctags"))
+(setq path-to-ctags (substring (shell-command-to-string "which ctags") 0 -1))
 (defun create-tags (dir-name)
   "Create tags file."
   (interactive "DDirectory: ")
