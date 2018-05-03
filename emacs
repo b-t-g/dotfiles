@@ -70,33 +70,43 @@
 (key-chord-define-global "OE" 'windmove-left)
 (key-chord-define-global "OU" 'windmove-right)
 (key-chord-define-global "#$" 'find-file)
-(require 'evil)
-(evil-mode 1)
-(define-key evil-normal-state-map "j" 'evil-next-visual-line)
-(define-key evil-normal-state-map "k" 'evil-previous-visual-line)
-(define-key evil-insert-state-map "\C-a" nil)
-(define-key evil-insert-state-map "\C-k" nil)
-(define-key evil-insert-state-map "\C-d" nil)
-(define-key evil-insert-state-map "\C-w" nil)
-(define-key evil-insert-state-map "\C-e" nil)
-
-(require 'evil-matchit)
-(global-evil-matchit-mode 1)
-
 (global-set-key (kbd "C-c p") 'helm-projectile)
-(require 'highlight-indentation)
-(set-face-background 'highlight-indentation-face "#aaaaff")
+(use-package evil
+  :ensure t
+  :init
+  (evil-mode 1)
+  :config
+  (define-key evil-normal-state-map "j" 'evil-next-visual-line)
+  (define-key evil-normal-state-map "k" 'evil-previous-visual-line)
+  (define-key evil-insert-state-map "\C-a" nil)
+  (define-key evil-insert-state-map "\C-k" nil)
+  (define-key evil-insert-state-map "\C-d" nil)
+  (define-key evil-insert-state-map "\C-w" nil)
+  (define-key evil-insert-state-map "\C-e" nil)
+  )
 
-(custom-set-variables
- '(haskell-process-suggest-remove-import-lines t)
- '(haskell-process-auto-import-loaded-modules t)
- '(haskell-process-log t))
-(eval-after-load 'ruby-mode '(progn
-                               (define-key ruby-mode-map (kbd "M-s M-h") 'ruby-load-file)
-                               (define-key ruby-mode-map (kbd "M-s M-s") 'inf-ruby)))
-(setq haskell-tags-on-save t)
-(package-install 'intero)
-(add-hook 'haskell-mode-hook 'intero-mode)
+(use-package evil-matchit
+  :ensure t
+  :init
+  (global-evil-matchit-mode 1)
+  )
+
+(use-package highlight-indentation
+  :ensure t
+  :config
+  (set-face-background 'highlight-indentation-face "#aaaaff")
+  )
+
+(use-package intero
+  :ensure t
+  )
+
+(use-package haskell-mode
+  :ensure t
+  :init
+  (setq haskell-tags-on-save t)
+  (add-hook 'haskell-mode 'intero-mode)
+  )
 
 (setq path-to-ctags (substring (shell-command-to-string "which ctags") 0 -1))
 (defun create-tags (dir-name)
@@ -169,34 +179,44 @@
 (cmus)
 (initial-zsh)
 
-(add-hook 'python-mode-hook #'(lambda () (setq py-python-command "/usr/local/bin/python3")))
-(setq flymake-python-pyflakes-executable "flake8")
-(setq flymake-hlint-executable "~/.cabal/bin/hlint")
-(add-hook 'python-mode-hook 'highlight-indentation-mode)
-(eval-after-load 'python-mode '(progn
-                                 (define-key python-mode-map (kbd "C-c C-l") 'py-execute-buffer-no-switch)))
+(use-package python-mode
+  :ensure t
+  :init
+  (setq py-python-command "/usr/local/bin/python3")
+  (setq flymake-python-pyflakes-executable "flake8")
+  (setq flymake-hlint-executable "~/.cabal/bin/hlint")
+  (add-hook  'python-mode 'hightlight-indentation-mode)
+  :config
+  (define-key python-mode-map (kbd "C-c C-l") 'py-execute-buffer-no-switch)
+  )
 
-(defun go-build ()
-  (interactive)
-  (eshell-command (format "go build %s" buffer-file-name)))
-(eval-after-load 'go-mode '(progn
-                             (define-key go-mode-map (kbd "C-c C-e") (kbd "if SPC err SPC != SPC nil SPC { RET RET } <up> TAB"))
-                             (define-key go-mode-map (kbd "C-c C-p") (kbd "if SPC err SPC != SPC nil SPC { RET RET } <up> TAB panic(\"\") <left> <left>"))
-                             (define-key go-mode-map (kbd "C-c C-n") (kbd "if SPC err SPC != SPC nil SPC { RET TAB return SPC nil, SPC err RET } RET"))
-                             (define-key go-mode-map (kbd "C-c C-l") 'go-build)
-                             (define-key go-mode-map (kbd "C-c C-c") 'ac-complete-go)
-                             (add-hook 'before-save-hook 'gofmt-before-save)
-                             ))
-(require 'go-autocomplete)
+(use-package go-mode
+  :ensure t
+  :init
+  (add-hook 'before-save-hook 'gofmt-before-save)
+  :config
+  (define-key go-mode-map (kbd "C-c C-e") (kbd "if SPC err SPC != SPC nil SPC { RET RET } <up> TAB"))
+  (define-key go-mode-map (kbd "C-c C-p") (kbd "if SPC err SPC != SPC nil SPC { RET RET } <up> TAB panic(\"\") <left> <left>"))
+  (define-key go-mode-map (kbd "C-c C-n") (kbd "if SPC err SPC != SPC nil SPC { RET TAB return SPC nil, SPC err RET } RET"))
+  (define-key go-mode-map (kbd "C-c C-l") 'go-build)
+  (define-key go-mode-map (kbd "C-c C-c") 'ac-complete-go)
+  (defun go-build ()
+	(interactive)
+	(eshell-command (format "go build %s" buffer-file-name)))
+  )
+(use-package go-autocomplete
+  :ensure t)
 (require 'auto-complete-config)
 (ac-config-default)
-(require 'ac-clang)
 
 (setq backup-by-copying t)
 (setq backup-directory-alist `(("." . "~/.saves")))
 (setq column-number-mode t)
-(require 'smooth-scrolling)
-(smooth-scrolling-mode 1)
+(use-package smooth-scrolling
+  :ensure t
+  :init
+  (smooth-scrolling-mode 1)
+  )
 
 (setq jekyll-drafts-blog "/Users/brendangood/b-t-g.github.io/src/drafts")
 (setq jekyll-pdfs-blog "/Users/brendangood/b-t-g.github.io/pdfs")
@@ -209,9 +229,8 @@
 	 (org2jekyll-publish)))
 (setq indent-tabs-mode nil)
 (setq-default tab-width 4)
-(autoload 'magit "magit" "magit" t)
-(setq debug-on-error t)
-(require 'cl)
+(use-package cl
+  :ensure t)
 (add-to-list 'load-path "~/.emacs.d/org2jekyll")
 (add-to-list 'load-path "~/.emacs.d/emacs-deferred")
 (add-to-list 'load-path "~/.emacs.d/kv")
