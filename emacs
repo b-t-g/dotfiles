@@ -54,6 +54,7 @@
      ("melpa-stable" . "http://stable.melpa.org/packages/")))))
                                         ;(autoload 'key-chord "key-chord" "key-choard" t)
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
+(add-hook 'before-save-hook 'untabify)
 
 (global-set-key (kbd "C-x n a") 'rename-buffer)
 (key-chord-mode 1)
@@ -209,6 +210,39 @@
 (require 'auto-complete-config)
 (ac-config-default)
 
+(use-package evil-leader
+  :ensure t
+  :config
+  (global-evil-leader-mode)
+  (evil-leader/set-leader "<SPC>")
+  (evil-leader/set-key "f" 'find-file)
+  (evil-leader/set-key-for-mode 'c-mode "s" 'cscope-find-this-symbol)
+  (evil-leader/set-key-for-mode 'c-mode "=" 'cscope-find-assignments-to-this-symbol)
+  (evil-leader/set-key-for-mode 'c-mode "g" 'cscope-find-global-definition-no-prompting)
+  (evil-leader/set-key-for-mode 'c-mode "G" 'cscope-find-global-definition)
+  (evil-leader/set-key-for-mode 'c-mode "c" 'cscope-find-functions-calling-this-function)
+  (evil-leader/set-key-for-mode 'c-mode "C" 'cscope-find-called-functions)
+  (evil-leader/set-key-for-mode 'c-mode "t" 'cscope-find-this-text-string)
+  (evil-leader/set-key-for-mode 'c-mode "f" 'cscope-find-this-file)
+  (evil-leader/set-key-for-mode 'c-mode "i" 'cscope-find-files-including-file)
+  )
+
+
+
+(use-package xcscope
+  :ensure t
+  :config
+  (define-key cscope-minor-mode-keymap (kbd "C-c s s") 'cscope-find-this-symbol)
+  (define-key cscope-minor-mode-keymap (kbd "C-c s =") 'cscope-find-assignments-to-this-symbol)
+  (define-key cscope-minor-mode-keymap (kbd "C-c s d") 'cscope-find-global-definition)
+  (define-key cscope-minor-mode-keymap (kbd "C-c s D") 'cscope-find-global-definition-no-prompting)
+  (define-key cscope-minor-mode-keymap (kbd "C-c s c") 'cscope-find-functions-calling-this-function)
+  (define-key cscope-minor-mode-keymap (kbd "C-c s C") 'cscope-find-called-functions)
+  (define-key cscope-minor-mode-keymap (kbd "C-c s t") 'cscope-find-this-text-string)
+  (define-key cscope-minor-mode-keymap (kbd "C-c s f") 'cscope-find-this-file)
+  (define-key cscope-minor-mode-keymap (kbd "C-c s i") 'cscope-find-files-including-file)
+  (add-hook 'c-mode-hook 'cscope-minor-mode))
+
 (setq backup-by-copying t)
 (setq backup-directory-alist `(("." . "~/.saves")))
 (setq column-number-mode t)
@@ -312,3 +346,17 @@
  '(package-selected-packages
    (quote
 	(org2jekyll xcscope org skewer-mode j-mode company-erlang ivy-erlang-complete company-irony ac-clang java-imports ac-etags fuzzy smooth-scrolling dumb-jump flycheck-gometalinter company-go go-add-tags go-autocomplete gorepl-mode highlight-indentation flymake-hlint feature-mode markdown-mode flymake-python-pyflakes nhexl-mode helm-projectile evil-matchit flycheck-yamllint yaml-mode python-mode erlang flx-ido projectile flycheck-haskell ## solarized-theme slime rust-playground ruby-tools ruby-test-mode ruby-end ruby-compilation rubocop rspec-mode rainbow-delimiters pandoc-mode pandoc merlin magithub latex-math-preview latex-extra key-chord intero idris-mode helm haskell-emacs gotest google-this git geiser evil-org evil-magit evil-leader ess-smart-underscore ess enh-ruby-mode elixir-mode ctags-update ctags color-theme-modern clojure-quick-repls clj-refactor ac-inf-ruby ac-cider))))
+ (let ((opam-share (ignore-errors (car (process-lines "opam" "config" "var" "share")))))
+      (when (and opam-share (file-directory-p opam-share))
+       ;; Register Merlin
+       (add-to-list 'load-path (expand-file-name "emacs/site-lisp" opam-share))
+       (autoload 'merlin-mode "merlin" nil t nil)
+       ;; Automatically start it in OCaml buffers
+       (add-hook 'tuareg-mode-hook 'merlin-mode t)
+       (add-hook 'caml-mode-hook 'merlin-mode t)
+       ;; Use opam switch to lookup ocamlmerlin binary
+       (setq merlin-command 'opam)))
+;; ## added by OPAM user-setup for emacs / base ## 56ab50dc8996d2bb95e7856a6eddb17b ## you can edit, but keep this line
+(require 'opam-user-setup "~/.emacs.d/opam-user-setup.el")
+;; ## end of OPAM user-setup addition for emacs / base ## keep this line
+(setq merlin-ac-setup 'easy)
