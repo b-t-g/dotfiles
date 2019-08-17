@@ -50,21 +50,30 @@
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 (add-hook 'before-save-hook 'untabify)
 (global-set-key (kbd "C-x n a") 'rename-buffer)
-(key-chord-mode 1)
-(key-chord-define-global "HT" "()\C-b")
-(key-chord-define-global "\"P" "\"\"\C-b")
-(key-chord-define-global "\'p" "\'\'\C-b")
-(key-chord-define-global "HN" "{}\C-b")
-(key-chord-define-global "NN" "$$\C-b")
-(key-chord-define-global "HR" "[]\C-b")
-(key-chord-define-global "HC" "\C-f")
-(key-chord-define-global "<>" "<>\C-b")
-(key-chord-define-global "GC" 'windmove-up)
-(key-chord-define-global "MW" 'windmove-down)
-(key-chord-define-global "OE" 'windmove-left)
-(key-chord-define-global "OU" 'windmove-right)
-(key-chord-define-global "#$" 'find-file)
+
+(use-package key-chord
+  :ensure t
+  :init
+  (key-chord-mode 1)
+  :config
+  (key-chord-define-global "HT" "()\C-b")
+  (key-chord-define-global "\"P" "\"\"\C-b")
+  (key-chord-define-global "\'p" "\'\'\C-b")
+  (key-chord-define-global "HN" "{}\C-b")
+  (key-chord-define-global "NN" "$$\C-b")
+  (key-chord-define-global "HR" "[]\C-b")
+  (key-chord-define-global "HC" "\C-f")
+  (key-chord-define-global "<>" "<>\C-b")
+  (key-chord-define-global "GC" 'windmove-up)
+  (key-chord-define-global "MW" 'windmove-down)
+  (key-chord-define-global "OE" 'windmove-left)
+  (key-chord-define-global "OU" 'windmove-right)
+  (key-chord-define-global "#$" 'find-file)
+  (key-chord-define-global "GL" 'yank-into-clipboard))
 (global-set-key (kbd "C-c p") 'helm-projectile)
+(defun yank-into-clipboard ()
+  (interactive)
+  (shell-command-on-region (region-beginning) (region-end) "pbcopy"))
 (use-package evil
   :ensure t
   :init
@@ -122,14 +131,14 @@
         (rename-buffer "mutt")
         )
     ))
-(defun initial-sh ()
+(defun initial-ksh ()
   (interactive)
-  (setq shs (find-buffers-named (buffer-list) "sh" 0))
-  (if (eq shs 0)
+  (setq kshs (find-buffers-named (buffer-list) "ksh" 0))
+  (if (eq kshs 0)
       (progn
-        (ansi-term (substring (shell-command-to-string "which sh") 0 -1))
-        (rename-buffer "sh")
-	(process-send-string "sh" ". .profile\n")
+        (ansi-term (substring (shell-command-to-string "which ksh") 0 -1))
+        (rename-buffer "ksh")
+	(process-send-string "ksh" ". ~/.profile\n")
         )
     )
   )
@@ -139,7 +148,7 @@
   (setq cmuss (find-buffers-named (buffer-list) "cmus" 0))
   (if (eq cmuss 0)
       (progn
-        (ansi-term (substring (shell-command-to-string "which sh") 0 -1))
+        (ansi-term (substring (shell-command-to-string "which ksh") 0 -1))
 		(rename-buffer "cmus")
 		(process-send-string "cmus" "cmus\n")
         )
@@ -150,7 +159,7 @@
   (interactive)
   (kill-matching-buffers "^cmus$")
   (progn
-    (ansi-term (substring (shell-command-to-string "which sh") 0 -1))
+    (ansi-term (substring (shell-command-to-string "which ksh") 0 -1))
     (rename-buffer "cmus")
 	(process-send-string "cmus" "cmus\n")
     ))
@@ -163,22 +172,22 @@
         (find-buffers-named (cdr buffers) name count))
     count))
 
-(defun new-sh ()
+(defun new-ksh ()
   (interactive)
-  (ansi-term (substring (shell-command-to-string "which sh") 0 -1))
-  (setq shs (find-buffers-named (buffer-list) "sh" 0))
-  (if (eq shs 0)
-      (progn (rename-buffer "sh")
-		(process-send-string "sh" ". .profile\n"))
-    (progn (rename-buffer (format "sh%d" (+ 1 shs)))
-	   (process-send-string (format "sh%d" (+ 1 shs)) ". .profile\n"))
+  (ansi-term (substring (shell-command-to-string "which ksh") 0 -1))
+  (setq kshs (find-buffers-named (buffer-list) "ksh" 0))
+  (if (eq kshs 0)
+      (progn (rename-buffer "ksh")
+		(process-send-string "ksh" ". ~/.profile\n"))
+    (progn (rename-buffer (format "ksh%d" (+ 1 kshs)))
+	   (process-send-string (format "ksh%d" (+ 1 kshs)) ". ~/.profile\n"))
 	 )
     )
 
 ; Run mutt, cmus, and a sh shell on startup
 (mutt)
 (cmus)
-(initial-sh)
+(initial-ksh)
 
 (use-package python-mode
   :ensure t
@@ -266,7 +275,7 @@
 (use-package org2jekyll
   :defer 3
   :config
-  (custom-set-variables '(org2jekyll-blog-author       "Brendan Good")
+  (setq '(org2jekyll-blog-author       "Brendan Good")
                         '(org2jekyll-source-directory  (expand-file-name "~/b-t-g.github.io/src/drafts"))
                         '(org2jekyll-jekyll-directory  (expand-file-name "~/b-t-g.github.io"))
                         '(org2jekyll-jekyll-drafts-dir "")
@@ -324,93 +333,3 @@
                              :recursive t)
 
                             ("web" :components ("images" "js" "css"))))))
-;;  ;; custom-set-variables was added by Custom.
-;;  ;; If you edit it by hand, you could mess it up, so be careful.
-;;  ;; Your init file should contain only one such instance.
-;;  ;; If there is more than one, they won't work right.
-;;  '(custom-safe-themes
-;;    (quote
-;; 	("cb30d82b05359203c8378638dec5ad6e37333ccdda9dee8b9fdf0c902e83fad7" "0e8c264f24f11501d3f0cabcd05e5f9811213f07149e4904ed751ffdcdc44739" "72c530c9c8f3561b5ab3bf5cda948cd917de23f48d9825b7a781fe1c0d737f2f" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" "a8245b7cc985a0610d71f9852e9f2767ad1b852c2bdea6f4aadc12cce9c4d6d0" "d677ef584c6dfc0697901a44b885cc18e206f05114c8a3b7fde674fce6180879" default)))
-;;  '(haskell-process-auto-import-loaded-modules t)
-;;  '(haskell-process-log t)
-;;  '(haskell-process-suggest-remove-import-lines t)
-;;  '(package-archives
-;;    (quote
-;; 	(("gnu" . "http://elpa.gnu.org/packages/")
-;; 	 ("melpa-stable" . "http://stable.melpa.org/packages/"))))
-;;  '(package-selected-packages
-;;    (quote
-;; 	(org2jekyll xcscope org skewer-mode j-mode company-erlang ivy-erlang-complete company-irony ac-clang java-imports ac-etags fuzzy smooth-scrolling dumb-jump flycheck-gometalinter company-go go-add-tags go-autocomplete gorepl-mode highlight-indentation flymake-hlint feature-mode markdown-mode flymake-python-pyflakes nhexl-mode helm-projectile evil-matchit flycheck-yamllint yaml-mode python-mode erlang flx-ido projectile flycheck-haskell ## solarized-theme slime rust-playground ruby-tools ruby-test-mode ruby-end ruby-compilation rubocop rspec-mode rainbow-delimiters pandoc-mode pandoc merlin magithub latex-math-preview latex-extra key-chord intero idris-mode helm haskell-emacs gotest google-this git geiser evil-org evil-magit evil-leader ess-smart-underscore ess enh-ruby-mode elixir-mode ctags-update ctags color-theme-modern clojure-quick-repls clj-refactor ac-inf-ruby ac-cider))))
-;;  (let ((opam-share (ignore-errors (car (process-lines "opam" "config" "var" "share")))))
-;;       (when (and opam-share (file-directory-p opam-share))
-;;        ;; Register Merlin
-;;        (add-to-list 'load-path (expand-file-name "emacs/site-lisp" opam-share))
-;;        (autoload 'merlin-mode "merlin" nil t nil)
-;;        ;; Automatically start it in OCaml buffers
-;;        (add-hook 'tuareg-mode-hook 'merlin-mode t)
-;;        (add-hook 'caml-mode-hook 'merlin-mode t)
-;;        ;; Use opam switch to lookup ocamlmerlin binary
-;;        (setq merlin-command 'opam)))
-;; ;; ## added by OPAM user-setup for emacs / base ## 56ab50dc8996d2bb95e7856a6eddb17b ## you can edit, but keep this line
-;; (require 'opam-user-setup "~/.emacs.d/opam-user-setup.el")
-;; ;; ## end of OPAM user-setup addition for emacs / base ## keep this line
-;; (setq merlin-ac-setup 'easy)
-
-;; (custom-set-variables
-;;  ;; custom-set-variables was added by Custom.
-;;  ;; If you edit it by hand, you could mess it up, so be careful.
-;;  ;; Your init file should contain only one such instance.
-;;  ;; If there is more than one, they won't work right.
-;;  '(org-publish-project-alist
-;;    (\`
-;; 	(("default" :base-directory
-;; 	  (\,
-;; 	   (org2jekyll-input-directory))
-;; 	  :base-extension "org" :publishing-directory
-;; 	  (\,
-;; 	   (org2jekyll-output-directory))
-;; 	  :publishing-function org-html-publish-to-html :headline-levels 4 :section-numbers nil :with-toc nil :html-head "<link rel=\"stylesheet\" href=\"./css/style.css\" type=\"text/css\"/>" :html-preamble t :recursive t :make-index t :html-extension "html" :body-only t)
-;; 	 ("post" :base-directory
-;; 	  (\,
-;; 	   (org2jekyll-input-directory))
-;; 	  :base-extension "org" :publishing-directory
-;; 	  (\,
-;; 	   (org2jekyll-output-directory org2jekyll-jekyll-posts-dir))
-;; 	  :publishing-function org-html-publish-to-html :headline-levels 4 :section-numbers nil :with-toc nil :html-head "<link rel=\"stylesheet\" href=\"./css/style.css\" type=\"text/css\"/>" :html-preamble t :recursive t :make-index t :html-extension "html" :body-only t)
-;; 	 ("images" :base-directory
-;; 	  (\,
-;; 	   (org2jekyll-input-directory "img"))
-;; 	  :base-extension "jpg\\|gif\\|png" :publishing-directory
-;; 	  (\,
-;; 	   (org2jekyll-output-directory "img"))
-;; 	  :publishing-function org-publish-attachment :recursive t)
-;; 	 ("js" :base-directory
-;; 	  (\,
-;; 	   (org2jekyll-input-directory "js"))
-;; 	  :base-extension "js" :publishing-directory
-;; 	  (\,
-;; 	   (org2jekyll-output-directory "js"))
-;; 	  :publishing-function org-publish-attachment :recursive t)
-;; 	 ("css" :base-directory
-;; 	  (\,
-;; 	   (org2jekyll-input-directory "css"))
-;; 	  :base-extension "css\\|el" :publishing-directory
-;; 	  (\,
-;; 	   (org2jekyll-output-directory "css"))
-;; 	  :publishing-function org-publish-attachment :recursive t)
-;; 	 ("web" :components
-;; 	  ("images" "js" "css")))))
-;;  '(org2jekyll-blog-author "Brendan Good" nil (org2jekyll))
-;;  '(org2jekyll-jekyll-directory (expand-file-name "~/b-t-g.github.io") nil (org2jekyll))
-;;  '(org2jekyll-jekyll-drafts-dir "" nil (org2jekyll))
-;;  '(org2jekyll-jekyll-posts-dir "_posts/" nil (org2jekyll))
-;;  '(org2jekyll-source-directory (expand-file-name "~/b-t-g.github.io/src/drafts") nil (org2jekyll))
-;;  '(package-selected-packages
-;;    (quote
-;; 	(flycheck-tip popup yaml-mode xcscope utop use-package typescript-mode tuareg solarized-theme smooth-scrolling slime simple-httpd scala-mode sbt-mode rust-playground ruby-tools ruby-test-mode ruby-end ruby-compilation rubocop rspec-mode rainbow-delimiters python-mode pandoc-mode pandoc org nhexl-mode merlin magithub lfe-mode key-chord julia-mode js2-mode java-imports j-mode intero idris-mode htmlize highlight-indentation helm-projectile haskell-emacs gotest gorepl-mode google-this go-autocomplete go-add-tags git geiser fuzzy flymake-python-pyflakes flymake-hlint flycheck-yamllint flycheck-gometalinter flx-ido feature-mode evil-org evil-matchit evil-magit evil-leader ess enh-ruby-mode elixir-mode dumb-jump diminish dash-functional ctags-update ctags company-irony company-go company-erlang color-theme-modern clojure-quick-repls clj-refactor auto-complete-clang-async ace-flyspell ac-inf-ruby ac-etags ac-clang ac-cider))))
-;; (custom-set-faces
-;;  ;; custom-set-faces was added by Custom.
-;;  ;; If you edit it by hand, you could mess it up, so be careful.
-;;  ;; Your init file should contain only one such instance.
-;;  ;; If there is more than one, they won't work right.
-;;  )
