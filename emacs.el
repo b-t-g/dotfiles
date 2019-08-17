@@ -275,13 +275,12 @@
 (use-package org2jekyll
   :defer 3
   :config
-  (setq '(org2jekyll-blog-author       "Brendan Good")
-                        '(org2jekyll-source-directory  (expand-file-name "~/b-t-g.github.io/src/drafts"))
-                        '(org2jekyll-jekyll-directory  (expand-file-name "~/b-t-g.github.io"))
-                        '(org2jekyll-jekyll-drafts-dir "")
-                        '(org2jekyll-jekyll-posts-dir  "_posts/")
-                        '(org-publish-project-alist
-                          `(("default"
+  (setq org2jekyll-blog-author       "Brendan Good")
+  (setq org2jekyll-source-directory  (expand-file-name "~/b-t-g.github.io/src/drafts"))
+  (setq org2jekyll-jekyll-directory  (expand-file-name "~/b-t-g.github.io"))
+  (setq org2jekyll-jekyll-drafts-dir "")
+  (setq org2jekyll-jekyll-posts-dir  "_posts/")
+  (setq org-publish-project-alist `(("default"
                              :base-directory ,(org2jekyll-input-directory)
                              :base-extension "org"
                              :publishing-directory ,(org2jekyll-output-directory)
@@ -332,4 +331,18 @@
                              :publishing-function org-publish-attachment
                              :recursive t)
 
-                            ("web" :components ("images" "js" "css"))))))
+                            ("web" :components ("images" "js" "css")))))
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   (quote
+	(company-lsp lsp-mode smooth-scrolling scala-mode sbt-mode rust-playground ruby-tools ruby-end ruby-compilation rainbow-delimiters proof-general pdf-tools pandoc org2jekyll org-re-reveal nhexl-mode merlin magithub lfe-mode key-chord julia-mode js2-mode java-imports j-mode intero idris-mode highlight-indentation helm-projectile haskell-emacs gotest gorepl-mode google-this go-autocomplete go-add-tags git geiser fuzzy flymake-python-pyflakes flymake-hlint flycheck-yamllint flycheck-tip flycheck-gometalinter flycheck-elixir flx-ido feature-mode evil-org evil-matchit evil-magit evil-leader ess enh-ruby-mode dumb-jump diminish ctags-update ctags company-irony company-go company-erlang company-distel color-theme-modern clojure-quick-repls clj-refactor auto-complete-clang-async alchemist ace-flyspell ac-inf-ruby ac-etags ac-clang ac-cider))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
