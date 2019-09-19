@@ -42,6 +42,7 @@
 ;;;
   )
 ;;;
+(set-default 'truncate-lines nil)
 (server-start)
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
@@ -50,7 +51,7 @@
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 (add-hook 'before-save-hook 'untabify)
 (global-set-key (kbd "C-x n a") 'rename-buffer)
-
+(global-set-key (kbd "C-c C-a") (kbd "C-x M-x TAB C-g"))
 (use-package key-chord
   :ensure t
   :init
@@ -339,7 +340,7 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-	(company-lsp lsp-mode smooth-scrolling scala-mode sbt-mode rust-playground ruby-tools ruby-end ruby-compilation rainbow-delimiters proof-general pdf-tools pandoc org2jekyll org-re-reveal nhexl-mode merlin magithub lfe-mode key-chord julia-mode js2-mode java-imports j-mode intero idris-mode highlight-indentation helm-projectile haskell-emacs gotest gorepl-mode google-this go-autocomplete go-add-tags git geiser fuzzy flymake-python-pyflakes flymake-hlint flycheck-yamllint flycheck-tip flycheck-gometalinter flycheck-elixir flx-ido feature-mode evil-org evil-matchit evil-magit evil-leader ess enh-ruby-mode dumb-jump diminish ctags-update ctags company-irony company-go company-erlang company-distel color-theme-modern clojure-quick-repls clj-refactor auto-complete-clang-async alchemist ace-flyspell ac-inf-ruby ac-etags ac-clang ac-cider))))
+	(lsp-python lsp-go lsp-elixir lsp-java lsp-ocaml lsp-rust company-lsp lsp-mode smooth-scrolling scala-mode sbt-mode rust-playground ruby-tools ruby-end ruby-compilation rainbow-delimiters proof-general pdf-tools pandoc org2jekyll org-re-reveal nhexl-mode merlin magithub lfe-mode key-chord julia-mode js2-mode java-imports j-mode intero idris-mode highlight-indentation helm-projectile haskell-emacs gotest gorepl-mode google-this go-autocomplete go-add-tags git geiser fuzzy flymake-python-pyflakes flymake-hlint flycheck-yamllint flycheck-tip flycheck-gometalinter flycheck-elixir flx-ido feature-mode evil-org evil-matchit evil-magit evil-leader ess enh-ruby-mode dumb-jump diminish ctags-update ctags company-irony company-go company-erlang company-distel color-theme-modern clojure-quick-repls clj-refactor auto-complete-clang-async alchemist ace-flyspell ac-inf-ruby ac-etags ac-clang ac-cider))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
