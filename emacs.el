@@ -51,7 +51,7 @@
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 (add-hook 'before-save-hook 'untabify)
 (global-set-key (kbd "C-x n a") 'rename-buffer)
-(global-set-key (kbd "C-c C-a") (kbd "C-x M-x TAB C-g"))
+(global-set-key (kbd "C-c r C-s") (kbd "C-x M-x TAB C-g"))
 (use-package key-chord
   :ensure t
   :init
@@ -70,11 +70,12 @@
   (key-chord-define-global "OE" 'windmove-left)
   (key-chord-define-global "OU" 'windmove-right)
   (key-chord-define-global "#$" 'find-file)
-  (key-chord-define-global "GL" 'yank-into-clipboard))
+  (key-chord-define-global "GL" (kbd "M-| pbcopy RET C-g")
+                           )
+  )
+
+    
 (global-set-key (kbd "C-c p") 'helm-projectile)
-(defun yank-into-clipboard ()
-  (interactive)
-  (shell-command-on-region (region-beginning) (region-end) "pbcopy"))
 (use-package evil
   :ensure t
   :init
@@ -90,6 +91,7 @@
   (define-key evil-insert-state-map "\C-t" nil)
   (define-key evil-insert-state-map "\C-n" nil)
   (define-key evil-insert-state-map "\C-p" nil)
+  (define-key evil-insert-state-map "\C-r" nil)
   )
 
 
